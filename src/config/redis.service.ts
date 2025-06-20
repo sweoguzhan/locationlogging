@@ -27,14 +27,14 @@ export class RedisService {
     this.redis.on('connect', () => {
       this.isConnected = true;
       this.circuitBreakerOpen = false;
-      this.logger.log('🔗 Redis connected successfully');
+      this.logger.log('Redis connected successfully');
     });
 
     this.redis.on('error', (error) => {
       this.isConnected = false;
       this.circuitBreakerOpen = true;
       this.lastFailureTime = Date.now();
-      this.logger.error('❌ Redis connection error:', error.message);
+      this.logger.error('Redis connection error:', error.message);
     });
   }
 

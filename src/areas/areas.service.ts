@@ -55,9 +55,9 @@ export class AreasService {
   private async invalidateAreasCache() {
     try {
       await this.redisService.del(this.CACHE_KEY);
-      this.logger.log('🗑️ Areas cache invalidated');
+      this.logger.log('Areas cache invalidated');
     } catch (error) {
-      this.logger.warn('⚠️ Failed to invalidate areas cache:', error.message);
+      this.logger.warn('Failed to invalidate areas cache:', error.message);
     }
   }
 
@@ -65,9 +65,9 @@ export class AreasService {
     try {
       const areas = await this.areaRepository.find();
       await this.redisService.set(this.CACHE_KEY, JSON.stringify(areas), 300);
-      this.logger.log('🔄 Areas cache refreshed proactively');
+      this.logger.log('Areas cache refreshed proactively');
     } catch (error) {
-      this.logger.warn('⚠️ Failed to refresh areas cache:', error.message);
+      this.logger.warn('Failed to refresh areas cache:', error.message);
     }
   }
 }

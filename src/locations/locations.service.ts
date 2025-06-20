@@ -84,7 +84,7 @@ export class LocationsService {
 
   private async markLocationForRetry(locationId: string, error: string) {
     try {
-      this.logger.warn(`🔄 Location ${locationId} marked for retry due to: ${error}`);
+      this.logger.warn(`Location ${locationId} marked for retry due to: ${error}`);
 
       // TODO: İşleme durumunu izlemek için veritabanı alanı ekleyebilirim ancak gerek duyulmuyordu case üzerinde.
     } catch (updateError) {
@@ -94,16 +94,16 @@ export class LocationsService {
 
   private async procesLocationSync(locationId: string, locationData: CreateLocationDto) {
     try {
-      this.logger.log(`🔄 Processing location synchronously: ${locationId}`);
+      this.logger.log(`Processing location synchronously: ${locationId}`);
 
       const areas = await this.areaRepository.find();
-      this.logger.debug(`🗄️ Areas loaded from database for sync processing: ${areas.length}`);
+      this.logger.debug(`Areas loaded from database for sync processing: ${areas.length}`);
 
       for (const area of areas) {
         const isInside = this.isPointInPolygon(locationData.latitude, locationData.longitude, area.boundary);
 
         if (isInside) {
-          this.logger.log(`📍 Point is INSIDE area: ${area.name} (sync processing)`);
+          this.logger.log(`Point is INSIDE area: ${area.name} (sync processing)`);
 
           const recentLogCount = await this.logRepository
             .createQueryBuilder('log')
@@ -121,14 +121,14 @@ export class LocationsService {
             });
             await this.logRepository.save(newLog);
 
-            this.logger.log(`✅ Sync processing: User entered area ${area.name} (Log created)`);
+            this.logger.log(`Sync processing: User entered area ${area.name} (Log created)`);
           } else {
-            this.logger.log(`⏱️ Sync processing: User already in area ${area.name} (Skip)`);
+            this.logger.log(`Sync processing: User already in area ${area.name} (Skip)`);
           }
         }
       }
     } catch (error) {
-      this.logger.error(`❌ Sync processing failed for location ${locationId}:`, error);
+      this.logger.error(`Sync processing failed for location ${locationId}:`, error);
     }
   }
 

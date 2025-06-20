@@ -80,7 +80,6 @@ private/
 # =====================
 # 📊 Logs & Monitoring
 # =====================
-logs/
 *.log
 *.log.*
 pids/
