@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with PostGIS for geospatial queries
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: location-logging-postgres
+    environment:
+      POSTGRES_DB: location_logging
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - location-logging-network
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: location-logging-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - location-logging-network
+
+  # Redis Commander for Redis management (optional)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: location-logging-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - location-logging-network
+
+  # pgAdmin for PostgreSQL management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: location-logging-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - location-logging-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  location-logging-network:
+    driver: bridge 

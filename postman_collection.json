@@ -1,0 +1,844 @@
+{
+  "info": {
+    "name": "Location Logging API - Complete Test Suite",
+    "description": "🚀 Comprehensive API collection for Location Logging System\n\n📍 Features:\n- GPS Location Tracking\n- Area Management (Polygons)\n- Automatic Area Detection\n- Background Job Processing\n- Comprehensive Logging\n\n🔧 Base URL: http://localhost:3000\n\n📚 Total Endpoints: 18",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "area_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "location_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "log_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏥 Health Check",
+      "item": [
+        {
+          "name": "System Health Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Health check returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Database is healthy', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.services.database.status).to.eql('healthy');",
+                  "});",
+                  "",
+                  "pm.test('Redis is healthy', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.services.redis.status).to.eql('healthy');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "🔍 Check system health including database and Redis connection status\n\n✅ Expected Response:\n- Database connection status\n- Redis connection status\n- System uptime\n- Memory usage\n- Response time"
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Users Management",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has user ID', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.collectionVariables.set('user_id', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Oğuzhan Cengel\",\n  \"email\": \"oguzhan@test.com\",\n  \"phone\": \"+905551234567\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            },
+            "description": "👤 Create a new user in the system\n\n📝 Required Fields:\n- name: User's full name\n- email: Valid email address\n- phone: Phone number\n- isActive: User status (boolean)\n\n💡 Response includes generated user ID"
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            },
+            "description": "📋 Retrieve all users in the system\n\n📊 Response includes:\n- Complete user list\n- User details and status\n- Total count information"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            },
+            "description": "🔍 Get specific user details by ID\n\n📋 Returns:\n- Complete user information\n- Account status\n- Creation/update timestamps"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Oğuzhan Cengel - Updated\",\n  \"phone\": \"+905559876543\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            },
+            "description": "✏️ Update user information\n\n📝 Updatable Fields:\n- name: User's name\n- phone: Phone number\n- isActive: Account status\n- email: Email address\n\n💡 Only send fields you want to update"
+          }
+        },
+        {
+          "name": "Get User Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}/locations",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}", "locations"]
+            },
+            "description": "📍 Get all location history for a specific user\n\n📊 Returns:\n- Complete GPS location history\n- Timestamps for each location\n- Accuracy and movement data\n- Chronological order"
+          }
+        },
+        {
+          "name": "Get User Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}/logs",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}", "logs"]
+            },
+            "description": "📊 Get all area entry logs for a specific user\n\n📋 Includes:\n- Area entry/exit events\n- Timestamps for each event\n- Area information\n- Automatic detection logs"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            },
+            "description": "🗑️ Delete a user from the system\n\n⚠️ Warning: This will also delete:\n- All user locations\n- All user logs\n- Related area entries\n\n🔒 This action cannot be undone"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Areas Management",
+      "item": [
+        {
+          "name": "Create Area",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Area created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has area ID', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.collectionVariables.set('area_id', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Istanbul Office\",\n  \"description\": \"Main office building in Istanbul Ataşehir\",\n  \"type\": \"office\",\n  \"coordinates\": [\n    [41.0082, 28.9784],\n    [41.0090, 28.9784],\n    [41.0090, 28.9794],\n    [41.0082, 28.9794],\n    [41.0082, 28.9784]\n  ],\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/areas",
+              "host": ["{{base_url}}"],
+              "path": ["areas"]
+            },
+            "description": "🏢 Create a new geographical area with polygon coordinates\n\n📍 Coordinates Format:\n- Array of [latitude, longitude] pairs\n- First and last coordinates must be identical\n- Minimum 4 points for polygon\n- Use Istanbul coordinates for testing\n\n🗺️ Example coordinates create a rectangle in Istanbul"
+          }
+        },
+        {
+          "name": "Get All Areas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/areas",
+              "host": ["{{base_url}}"],
+              "path": ["areas"]
+            },
+            "description": "📋 Retrieve all defined geographical areas\n\n📊 Response includes:\n- All area definitions\n- Polygon coordinates\n- Area types and descriptions\n- Active status"
+          }
+        },
+        {
+          "name": "Get Area by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/areas/{{area_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["areas", "{{area_id}}"]
+            },
+            "description": "🔍 Get specific area details by ID\n\n📋 Returns:\n- Complete area information\n- Polygon coordinates\n- Area metadata\n- Creation timestamps"
+          }
+        },
+        {
+          "name": "Update Area",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Istanbul Office - Updated\",\n  \"description\": \"Updated main office building description\",\n  \"type\": \"office\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/areas/{{area_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["areas", "{{area_id}}"]
+            },
+            "description": "✏️ Update area information\n\n📝 Updatable Fields:\n- name: Area name\n- description: Area description\n- type: Area category\n- coordinates: Polygon coordinates\n- isActive: Area status"
+          }
+        },
+        {
+          "name": "Delete Area",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/areas/{{area_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["areas", "{{area_id}}"]
+            },
+            "description": "🗑️ Delete an area from the system\n\n⚠️ Warning: This will also delete:\n- All logs related to this area\n- Area detection rules\n\n🔒 This action cannot be undone"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📍 Locations Tracking",
+      "item": [
+        {
+          "name": "Save Location (Inside Area)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Location saved successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has location ID', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.collectionVariables.set('location_id', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"latitude\": 41.0085,\n  \"longitude\": 28.9789,\n  \"accuracy\": 3.0,\n  \"altitude\": 45.0,\n  \"speed\": 0.0,\n  \"heading\": 0.0,\n  \"timestamp\": \"2024-01-15T09:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/locations",
+              "host": ["{{base_url}}"],
+              "path": ["locations"]
+            },
+            "description": "📍 Save a GPS location INSIDE the test area\n\n🎯 This location (41.0085, 28.9789) is inside the created area\n\n⚡ Triggers:\n- Automatic area detection\n- Background job processing\n- Log generation if area entry detected\n\n📊 GPS Data:\n- latitude/longitude: Required coordinates\n- accuracy: GPS accuracy in meters\n- speed: Movement speed\n- heading: Direction in degrees"
+          }
+        },
+        {
+          "name": "Save Location (Outside Area)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"latitude\": 41.0100,\n  \"longitude\": 28.9800,\n  \"accuracy\": 3.0,\n  \"altitude\": 45.0,\n  \"speed\": 15.5,\n  \"heading\": 45.0,\n  \"timestamp\": \"2024-01-15T12:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/locations",
+              "host": ["{{base_url}}"],
+              "path": ["locations"]
+            },
+            "description": "📍 Save a GPS location OUTSIDE the test area\n\n🎯 This location (41.0100, 28.9800) is outside the created area\n\n⚡ May trigger area exit detection if user was previously inside"
+          }
+        },
+        {
+          "name": "Get User Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/user/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "user", "{{user_id}}"]
+            },
+            "description": "📋 Get all locations for a specific user\n\n📊 Returns chronological list of:\n- GPS coordinates\n- Timestamps\n- Movement data (speed, heading)\n- Accuracy information"
+          }
+        },
+        {
+          "name": "Get Last Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/user/{{user_id}}/last",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "user", "{{user_id}}", "last"]
+            },
+            "description": "🎯 Get the most recent location of a user\n\n📍 Useful for:\n- Current position tracking\n- Real-time monitoring\n- Last known location\n- Movement status"
+          }
+        },
+        {
+          "name": "Get Locations by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/user/{{user_id}}/date-range?startDate=2024-01-01T00:00:00.000Z&endDate=2024-01-31T23:59:59.999Z",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "user", "{{user_id}}", "date-range"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01T00:00:00.000Z",
+                  "description": "Start date in ISO format"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-01-31T23:59:59.999Z",
+                  "description": "End date in ISO format"
+                }
+              ]
+            },
+            "description": "📅 Get user locations within a specific date range\n\n🔍 Filter options:\n- Custom date ranges\n- Specific time periods\n- Historical data analysis\n- Movement pattern tracking"
+          }
+        },
+        {
+          "name": "Get Location by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/{{location_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "{{location_id}}"]
+            },
+            "description": "🔍 Get specific location details by ID\n\n📋 Returns complete location information including all GPS metadata"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Logs & Analytics",
+      "item": [
+        {
+          "name": "Create Manual Log",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Log created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has log ID', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.collectionVariables.set('log_id', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"areaId\": \"{{area_id}}\",\n  \"action\": \"entered\",\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"metadata\": {\n    \"manualEntry\": true,\n    \"reason\": \"Manual test log entry\",\n    \"notes\": \"Testing manual log creation\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/logs",
+              "host": ["{{base_url}}"],
+              "path": ["logs"]
+            },
+            "description": "📝 Create a manual log entry for area access\n\n🔧 Use cases:\n- Manual check-in/check-out\n- Administrative entries\n- Testing log system\n- Override automatic detection\n\n📊 Actions: 'entered' or 'exited'"
+          }
+        },
+        {
+          "name": "Get All Logs (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (starts from 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of records per page"
+                }
+              ]
+            },
+            "description": "📊 Get all area entry logs with pagination\n\n📋 Returns:\n- Paginated log entries\n- Total count information\n- Navigation metadata\n- Sorting by timestamp (newest first)"
+          }
+        },
+        {
+          "name": "Get Logs by User (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/user/{{user_id}}?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "user", "{{user_id}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "👤 Get logs for a specific user with pagination\n\n📊 Perfect for:\n- User activity tracking\n- Personal dashboards\n- Attendance reports\n- User behavior analysis"
+          }
+        },
+        {
+          "name": "Get Logs by Area",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/area/{{area_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "area", "{{area_id}}"]
+            },
+            "description": "🏢 Get all logs for a specific area\n\n📊 Useful for:\n- Area activity monitoring\n- Traffic analysis\n- Security tracking\n- Area usage statistics"
+          }
+        },
+        {
+          "name": "Get Logs by User and Area",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/user/{{user_id}}/area/{{area_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "user", "{{user_id}}", "area", "{{area_id}}"]
+            },
+            "description": "🎯 Get logs for a specific user in a specific area\n\n📊 Perfect for:\n- Detailed user-area interaction\n- Specific location tracking\n- Focused analysis\n- Compliance reporting"
+          }
+        },
+        {
+          "name": "Get Logs by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/date-range?startDate=2024-01-01T00:00:00.000Z&endDate=2024-01-31T23:59:59.999Z",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "date-range"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01T00:00:00.000Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-01-31T23:59:59.999Z"
+                }
+              ]
+            },
+            "description": "📅 Get logs within a specific date range\n\n📊 Great for:\n- Period-based reports\n- Historical analysis\n- Monthly/weekly summaries\n- Trend analysis"
+          }
+        },
+        {
+          "name": "Get Log by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/{{log_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "{{log_id}}"]
+            },
+            "description": "🔍 Get specific log details by ID\n\n📋 Returns complete log information including metadata and relationships"
+          }
+        },
+        {
+          "name": "Delete Log",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logs/{{log_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["logs", "{{log_id}}"]
+            },
+            "description": "🗑️ Delete a log entry\n\n⚠️ Use with caution - this removes audit trail data\n\n🔒 This action cannot be undone"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧪 Test Scenarios",
+      "item": [
+        {
+          "name": "🚀 Scenario 1: Complete User Journey",
+          "item": [
+            {
+              "name": "1️⃣ Create Test User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('User created', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.collectionVariables.set('user_id', jsonData.id);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Test User Scenario 1\",\n  \"email\": \"scenario1@test.com\",\n  \"phone\": \"+905551111111\",\n  \"isActive\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["users"]
+                }
+              }
+            },
+            {
+              "name": "2️⃣ Create Test Area",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Area created', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.collectionVariables.set('area_id', jsonData.id);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Scenario Test Area\",\n  \"description\": \"Test area for complete user journey\",\n  \"type\": \"office\",\n  \"coordinates\": [\n    [41.0082, 28.9784],\n    [41.0090, 28.9784],\n    [41.0090, 28.9794],\n    [41.0082, 28.9794],\n    [41.0082, 28.9784]\n  ],\n  \"isActive\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/areas",
+                  "host": ["{{base_url}}"],
+                  "path": ["areas"]
+                }
+              }
+            },
+            {
+              "name": "3️⃣ Save Location Inside Area",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"latitude\": 41.0085,\n  \"longitude\": 28.9789,\n  \"accuracy\": 3.0,\n  \"altitude\": 45.0,\n  \"speed\": 0.0,\n  \"heading\": 0.0,\n  \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/locations",
+                  "host": ["{{base_url}}"],
+                  "path": ["locations"]
+                }
+              }
+            },
+            {
+              "name": "4️⃣ Wait for Background Processing",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["health"]
+                }
+              }
+            },
+            {
+              "name": "5️⃣ Check Generated Logs",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logs/user/{{user_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["logs", "user", "{{user_id}}"]
+                }
+              }
+            },
+            {
+              "name": "6️⃣ Save Location Outside Area",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"latitude\": 41.0100,\n  \"longitude\": 28.9800,\n  \"accuracy\": 3.0,\n  \"altitude\": 45.0,\n  \"speed\": 15.5,\n  \"heading\": 45.0,\n  \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/locations",
+                  "host": ["{{base_url}}"],
+                  "path": ["locations"]
+                }
+              }
+            },
+            {
+              "name": "7️⃣ Final Log Check",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/logs/user/{{user_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["logs", "user", "{{user_id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "⚡ Scenario 2: Performance Test",
+          "item": [
+            {
+              "name": "Performance Health Check",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["health"]
+                }
+              }
+            },
+            {
+              "name": "Bulk Location Save",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"latitude\": 41.008{{$randomInt}},\n  \"longitude\": 28.978{{$randomInt}},\n  \"accuracy\": {{$randomInt}}.0,\n  \"altitude\": {{$randomInt}}.0,\n  \"speed\": {{$randomInt}}.5,\n  \"heading\": {{$randomInt}}.0,\n  \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/locations",
+                  "host": ["{{base_url}}"],
+                  "path": ["locations"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('🚀 Location Logging API Request Starting...');",
+          "console.log('Base URL:', pm.collectionVariables.get('base_url'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is acceptable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "console.log('✅ Response time:', pm.response.responseTime + 'ms');"
+        ]
+      }
+    }
+  ]
+} 

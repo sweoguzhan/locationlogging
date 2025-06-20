@@ -1,0 +1,222 @@
+# ===========================================
+# 🚀 Location Logging API - .gitignore
+# ===========================================
+
+# =====================
+# 📦 Node.js & NPM
+# =====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# =====================
+# 🏗️ Build & Dist
+# =====================
+dist/
+build/
+.next/
+.nuxt/
+.vercel
+.output/
+
+# =====================
+# 🔧 NestJS Specific
+# =====================
+.nest/
+.tsbuildinfo
+
+# =====================
+# 💾 Database & Cache
+# =====================
+*.db
+*.sqlite
+*.sqlite3
+.db/
+db-data/
+postgres-data/
+redis-data/
+
+# =====================
+# 🐳 Docker
+# =====================
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# =====================
+# 🔐 Environment & Config
+# =====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+config/local.json
+config/production.json
+secrets/
+
+# =====================
+# 🗝️ Security & Keys
+# =====================
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+auth/
+private/
+.secrets/
+
+# =====================
+# 📊 Logs & Monitoring
+# =====================
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+.coverage/
+nyc_output/
+
+# =====================
+# 🧪 Testing
+# =====================
+.coverage/
+coverage/
+test-results/
+.nyc_output/
+junit.xml
+test-report.*
+
+# =====================
+# 💻 IDE & Editors
+# =====================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# =====================
+# 🎯 Development Tools
+# =====================
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.cache/
+.temp/
+.tmp/
+
+# =====================
+# 📱 OS Generated
+# =====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# =====================
+# 🔄 Version Control
+# =====================
+.git/
+.svn/
+.hg/
+
+# =====================
+# 📦 Package Managers
+# =====================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# =====================
+# 🌐 API & Documentation
+# =====================
+*.postman_collection.json
+*.postman_environment.json
+api-docs/
+swagger-spec.json
+
+# =====================
+# 📈 Analytics & Tracking
+# =====================
+.analytics/
+tracking/
+metrics/
+
+# =====================
+# 🔧 Project Specific
+# =====================
+
+# Location logging specific temporary files
+location-temp/
+gps-cache/
+area-cache/
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Log rotation files
+*.log.1
+*.log.2
+*.log.gz
+
+# Performance monitoring
+.clinic/
+flamegraph.*
+perf.data*
+
+# Memory dumps
+*.heapsnapshot
+*.cpuprofile
+
+# =====================
+# 📋 Development Notes
+# =====================
+TODO.md
+NOTES.md
+DEVELOPMENT.md
+.scratch/
+
+
+
+# =====================
+# 🌍 Deployment
+# =====================
+.serverless/
+.terraform/
+k8s/secrets/
+helm/values-prod.yaml
+
+# =====================
+# 📊 Monitoring & Health
+# =====================
+health-checks/
+monitoring-data/
+metrics-exports/
+
+# End of .gitignore 
